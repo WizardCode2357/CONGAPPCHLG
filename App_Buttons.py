@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+   #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Tue Oct 24 22:08:06 2023
@@ -22,13 +22,13 @@ import os
 from kivy.uix.gridlayout import GridLayout
 from datetime import date
 today = date.today()
-default_dir = "Attendence_Files/"
+default_dir = "Attendence_Files"
 current_file = "x.csv"
 import csv
 import pkgutil
 import platform
 folder_path = 'Attendence_Files/'  # Replace with the actual path to your folder
-
+import time
 
 
 
@@ -52,7 +52,7 @@ class HomeGUI(App):
         button1 = Button(text='Mark Attendance', on_release=self.on_button1_click, background_normal='Externalfiles/buttonbg1.png', background_down='Externalfiles/buttonbg5.png', font_name='Externalfiles/Comfortaa-Regular.ttf')
         button2 = Button(text='Open Viewing Website', on_release=self.on_button2_click, background_normal='Externalfiles/buttonbg2.png', background_down='Externalfiles/buttonbg6.png', font_name='Externalfiles/Comfortaa-Regular.ttf')
         button3 = Button(text='View All Spreadsheets', on_release=self.on_button3_click, background_normal='Externalfiles/buttonbg3.png', background_down='Externalfiles/buttonbg7.png', font_name='Externalfiles/Comfortaa-Regular.ttf')
-        button4 = Button(text='Link to GitHub(for any insrtructions or issues)', on_release=self.on_button4_click, background_normal='Externalfiles/buttonbg4.png', background_down='Externalfiles/buttonbg8.png', font_name='Externalfiles/Comfortaa-Regular.ttf')
+        button4 = Button(text='Link to GitHub(for any instructions or issues)', on_release=self.on_button4_click, background_normal='Externalfiles/buttonbg4.png', background_down='Externalfiles/buttonbg8.png', font_name='Externalfiles/Comfortaa-Regular.ttf')
 
         # Add buttons to the layout
         layout.add_widget(button1)
@@ -79,33 +79,36 @@ class HomeGUI(App):
         print("Button 3 clicked")
 
         if platform.system() == 'Windows':
-            subprocess.Popen(['explorer', folder_path], shell=True)
+            subprocess.Popen(['explorer', default_dir], shell=True)
         if platform.system() == 'Darwin':  # macOS
-            subprocess.Popen(['open', folder_path])
+            subprocess.Popen(['open', default_dir])
         else:  # Linux
-            subprocess.Popen(['xdg-open', folder_path])
+            subprocess.Popen(['xdg-open', default_dir])
 
     
     
     def on_button4_click(self, instance):
         print("Button 4 clicked")
+        webbrowser.open('https://github.com/WizardBoy2357/CONGAPPCHLG')
         
     def show_popup(self):
         self.text_popup = GridLayout(cols=1, padding=20)
         self.text_input2 = TextInput(hint_text="Enter Name of Class")
         self.text_input = TextInput(hint_text="Enter Room Number")
         self.text_input1 = TextInput(hint_text="Enter Period Number")
-        self.ok_button = Button(text="OK")
-        self.ok_button.bind(on_press=lambda x: self.get_user_input())
+        self.ok_button = Button(text="OK", on_release=self.get_user_input,font_name='Externalfiles/Comfortaa-Regular.ttf')
+        self.cancel_button = Button(text="Cancel", on_release=self.cancel_user_input,font_name='Externalfiles/Comfortaa-Regular.ttf')
+        #self.ok_button.bind(on_press=lambda x: self.get_user_input())
         self.text_popup.add_widget(self.text_input2)
         self.text_popup.add_widget(self.text_input)
         self.text_popup.add_widget(self.text_input1)
         self.text_popup.add_widget(self.ok_button)
+        self.text_popup.add_widget(self.cancel_button)
         
         self.input_popup = Popup(title="User Input Popup", content=self.text_popup, size_hint=(None, None), size=(600, 400))
         self.input_popup.open()
         
-    def get_user_input(self):
+    def get_user_input(self, instance):
         self.user_input2 = self.text_input2.text
         self.user_input = self.text_input.text
         self.user_input1 = self.text_input1.text
@@ -120,8 +123,10 @@ class HomeGUI(App):
         
         print("user_input is {0} {1} and {2}".format(self.user_input2, self.user_input, self.user_input1))
         self.input_popup.dismiss()
+        #time.sleep(7)
         self.scan_qr_code()
-     
+    def cancel_user_input(self, instance):
+        self.input_popup.dismiss()
     def install_libraries(self):
         self.t = ["pygame", "pyzbar", "playsound", "opencv-python"]  # Add library names to install
         self.x =0 #first item of list:t
@@ -147,18 +152,7 @@ class HomeGUI(App):
             pass
         pygame.quit()
         
-        
-    
-    
 
-
-        
-    
-    
-    
-    
-    
-    
     
     
     def scan_qr_code(self):
@@ -184,9 +178,8 @@ class HomeGUI(App):
                     print('Last QR Code:', self.qr_data)
                     self.play_sound()
     
-            # Overlay QR code count on the frame
-            cv2.putText(self.flipped_frame, f'QR Code count: {self.qr_code_count}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
-            cv2.putText(self.flipped_frame, 'To close program, hit the Enter/Return key', (745, 700), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+            # Overlay QR code count on the frame            cv2.putText(self.flipped_frame, f'QR Code count: {self.qr_code_count}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+            cv2.putText(self.flipped_frame, 'To close program, hit the Enter/Return key', (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
             cv2.imshow('QR Code Scanner', self.flipped_frame)
             key = cv2.waitKey(1)
             if key == 13: # Enter key in ASCHII
