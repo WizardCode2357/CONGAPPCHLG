@@ -1,0 +1,47 @@
+Last login: Sun Oct 29 20:21:07 on ttys006
+(base) ojasgirish@OjassMacBookPro ~ % vim java
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function openExistingCSV() {
+    var selectedDate = document.getElementById("date").value;
+    var selectedBlock = document.getElementById("Options").value;
+    var selectedRoomNumber = document.getElementById("Options2").value;
+    var fileName = selectedDate + selectedBlock + selectedRoomNumber + ".csv";
+
+    console.log("Attempting to open file:", fileName);
+
+    // Pass the fileName to the readCSVFile function
+    readCSVFile(fileName);
+}
+
+function readCSVFile(fileName) {
+    // Now you can use the fileName in this function
+    var filePath = fileName;
+
+    var files = document.querySelector('#file').files;
+
+    if (files.length > 0) {
+        // The rest of your code for reading and processing the CSV file remains the same
+        var file = files[0];
+        var reader = new FileReader();
+
