@@ -1,0 +1,80 @@
+Last login: Sun Oct 29 13:10:07 on ttys002
+(base) ojasgirish@OjassMacBookPro ~ % vim. newcsv.py
+zsh: command not found: vim.
+(base) ojasgirish@OjassMacBookPro ~ % vim newcsv.py
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import cv2
+import qrcode
+import csv
+import time
+
+# Function to create a new CSV file and write data to it
+def create_csv_file(file_name, data):
+    with open(file_name, mode='w', newline='') as csv_file:
+        csv_writer = csv.writer(csv_file)
+        csv_writer.writerow(data)
+
+# Function to scan a QR code
+def scan_qr_code():
+    # Initialize the camera
+    cap = cv2.VideoCapture(0)
+
+    while True:
+        ret, frame = cap.read()
+
+        if ret:
+            detector = cv2.QRCodeDetector()
+            data, vertices_array, _ = detector.detectAndDecode(frame)
+
+            if data:
+                print("QR Code Data:", data)
+                file_name = data + ".csv"
+                create_csv_file(file_name, ["Header1", "Header2", "Header3"])  # Replace with your headers
+                print(f"CSV file '{file_name}' created.")
+                break
+
+            cv2.imshow("QR Code Scanner", frame)
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+        else:
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    print("Scan a QR code to create a new CSV file.")
+    scan_qr_code()
+
+~                                                                                                                                                                                                           
+~                                                                                                                                                                                                           
+~                                                                                                                                                                                                           
+~                                                                                                                                                                                                           
+~                                                                                                                                                                                                           
+~                                                                                                                                                                                                           
+~                                                                                                                                                                                                           
+~                                                                                                                                                                                                           
+~                                                                                                                                                                                                           
+~                                                                                                                                                                                                           
+~                                                                                                                                                                                                           
+
