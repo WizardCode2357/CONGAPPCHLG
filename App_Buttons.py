@@ -17,30 +17,19 @@ import webbrowser
 from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
 import os
-#from  ATTENDANCE import *
-#camgui = Camera_Process()
 from kivy.uix.gridlayout import GridLayout
 from datetime import date
 today = date.today()
-default_dir = "Attendence_Files"
+default_dir = "Attendence_Files/"
 current_file = "x.csv"
 import csv
 import pkgutil
 import platform
-folder_path = 'Attendence_Files/'  # Replace with the actual path to your folder
-import time
-
-
-
+folder_path = 'Attendence_Files'  # Replace with the actual path to your folder
 
 class HomeGUI(App):
     title = 'Attendance Plus' 
     
-    
-
-
-
-
 
     def build(self):
         # Create a BoxLayout for the main layout
@@ -71,19 +60,18 @@ class HomeGUI(App):
 
     def on_button2_click(self, instance):
         print("Button 2 clicked")
-        html_file_path = 'C:/Users/dsdhr/OneDrive/Desktop/HTML/try1ggsn.html'
+        html_file_path = 'Externalfiles/Java'
         webbrowser.open('file://' + html_file_path)
 
 
     def on_button3_click(self, instance):
         print("Button 3 clicked")
-
-        if platform.system() == 'Windows':
-            subprocess.Popen(['explorer', default_dir], shell=True)
+        if platform.system() == 'Linux':
+            subprocess.Popen(['xdg-open', folder_path])
         if platform.system() == 'Darwin':  # macOS
-            subprocess.Popen(['open', default_dir])
+            subprocess.Popen(['open', folder_path])
         else:  # Linux
-            subprocess.Popen(['xdg-open', default_dir])
+            os.system(f'explorer "{folder_path}"')
 
     
     
@@ -115,11 +103,13 @@ class HomeGUI(App):
         RMNUM = self.user_input1
         Period = self.user_input
         Classname = self.user_input2
-        attendence_file = "{0}--{1}--{2}--{3}.csv".format(RMNUM, Period, Classname, today)
+        attendence_file = "{2}--{1}--{0}--{3}.csv".format(RMNUM, Period, Classname, today)
         #print(dhruv_file)
         self.current_file = default_dir + attendence_file
-        with open(self.current_file, mode='w', newline='') as file:
-            writer = csv.writer(file)  
+        #with open(self.current_file, mode='w', newline='') as file:
+        #self.csv_file = open(self.current_file, 'a', newline='')
+        #self.csv_writer = csv.writer(self.csv_file)
+        #self.writer = csv.writer(self.csv_writer)  
         
         print("user_input is {0} {1} and {2}".format(self.user_input2, self.user_input, self.user_input1))
         self.input_popup.dismiss()
@@ -156,7 +146,7 @@ class HomeGUI(App):
     
     
     def scan_qr_code(self):
-        self.install_libraries()
+        #self.install_libraries()
         self.cap = cv2.VideoCapture(0) #webcam
         self.scanned_qr_codes = set()  #mark QR CODES
         self.qr_code_count = 0 #start count for QR codes
@@ -169,7 +159,7 @@ class HomeGUI(App):
             self.qr_codes = pyzbar.decode(self.gray) #looking for qr codes
             for self.qr_code in self.qr_codes:
                 self.qr_data = self.qr_code.data.decode('utf-8')
-                
+
                 # Check if the QR code has already been scanned
                 if self.qr_data not in self.scanned_qr_codes:
                     self.scanned_qr_codes.add(self.qr_data)
@@ -177,8 +167,20 @@ class HomeGUI(App):
                     print(f'QR Code count: {self.qr_code_count}')
                     print('Last QR Code:', self.qr_data)
                     self.play_sound()
+                    '''self.csv_file = open(self.current_file, 'a+', newline='')
+                    self.csv_writer = csv.writer(self.csv_file)
+                    x = 'Present'
+                   
+                    #while 1:   
+                    self.csv_writer.writerow([self.qr_data, x])'''
+                    with open(self.current_file, 'a', newline='') as csv_file:
+                        csv_writer = csv.writer(csv_file)
+                        x = 'Present'
+                        csv_writer.writerow([self.qr_data, x])
+                    
     
-            # Overlay QR code count on the frame            cv2.putText(self.flipped_frame, f'QR Code count: {self.qr_code_count}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+            # Overlay QR code count on the frame            
+            cv2.putText(self.flipped_frame, f'QR Code count: {self.qr_code_count}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
             cv2.putText(self.flipped_frame, 'To close program, hit the Enter/Return key', (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
             cv2.imshow('QR Code Scanner', self.flipped_frame)
             key = cv2.waitKey(1)
@@ -186,5 +188,4 @@ class HomeGUI(App):
                 break
         self.cap.release() #close webcam and window
         cv2.destroyAllWindows()
-
 
